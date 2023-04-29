@@ -1,7 +1,7 @@
 # SplitReceiptApi
 Api for sptlitting receipts after big parties
 
-## What implimented know?
+## What implimented now?
 GET api/1/users : get JWT from login and password
 
 POST api/1/users : register user and get his JWT
