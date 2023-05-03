@@ -10,8 +10,16 @@ public class ProductData {
     @NotNull
     @PositiveOrZero
     long price;
+
+    @NotNull
+    @PositiveOrZero
+    long count;
+
     @NotNull
     @NotEmpty
     String name;
+
+    @NotNull
+    boolean isOwn;
 
 }

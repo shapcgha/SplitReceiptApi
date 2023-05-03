@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table()
+@Table
 public class Receipt {
 
     @Id
@@ -32,6 +32,5 @@ public class Receipt {
     private Set<User> users;
 
     @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL)
-    @OrderBy("owner")
     private List<Product> products;
 }

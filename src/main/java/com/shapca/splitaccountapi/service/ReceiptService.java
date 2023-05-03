@@ -8,6 +8,7 @@ import com.shapca.splitaccountapi.repository.ReceiptRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class ReceiptService {
@@ -30,12 +31,22 @@ public class ReceiptService {
     }
 
     public Product addProduct(Receipt receipt, ProductData productData, User user) {
-        Product product = new Product();
-        product.setPrice(productData.getPrice());
-        product.setName(productData.getName());
-        product.setOwner(user.getLogin());
-        product.setReceipt(receipt);
-        receipt.getProducts().add(product);
+        List<Product> sameProducts = receipt.getProducts().stream().filter(it -> !it.isOwn() && it.getName().equals(productData.getName())).toList();
+        Product product;
+        if (sameProducts.isEmpty() || productData.isOwn()) {
+            product = new Product();
+            product.setPrice(productData.getPrice());
+            product.setName(productData.getName());
+            product.setOwners(new HashSet<>());
+            product.setCount(product.getCount());
+            product.setOwn(productData.isOwn());
+            product.setReceipt(receipt);
+            receipt.getProducts().add(product);
+        } else {
+            product = sameProducts.get(0);
+        }
+        product.getOwners().add(user);
+        user.getProducts().add(product);
         receiptRepository.save(receipt);
         return product;
     }
@@ -51,8 +62,8 @@ public class ReceiptService {
     public double userPrice(Receipt receipt, User user) {
         double price = 0;
         for (Product product : receipt.getProducts()) {
-            if(product.getOwner().equals(user.getLogin())) {
-                price+=product.getPrice();
+            if (product.getOwners().contains(user)) {
+                price += product.getPrice() / (double) product.getOwners().size() * product.getCount();
             }
         }
         return price;

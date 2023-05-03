@@ -3,7 +3,9 @@ package com.shapca.splitaccountapi.service;
 import com.shapca.splitaccountapi.domain.User;
 import com.shapca.splitaccountapi.form.UserData;
 import com.shapca.splitaccountapi.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,6 +21,9 @@ public class UserService {
     }
 
     public String register(UserData userData) {
+        if (!isLoginVacant(userData.getLogin())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "login is already in use");
+        }
         User user = new User();
         user.setLogin(userData.getLogin());
         user.setPasswordSha(userData.getPassword());
@@ -29,6 +34,9 @@ public class UserService {
         User user = new User();
         user.setLogin(userData.getLogin());
         user.setPasswordSha(userData.getPassword());
+        if (userRepository.findByLoginAndPasswordSha(user.getLogin(), user.getPasswordSha()) == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "login or password incorrect");
+        }
         return jwtService.createJWT(userRepository.findByLoginAndPasswordSha(userData.getLogin(), user.getPasswordSha()));
     }
 

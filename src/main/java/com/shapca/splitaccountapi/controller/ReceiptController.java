@@ -36,7 +36,7 @@ public class ReceiptController {
 
     @PostMapping("/receipts")
     @ResponseStatus(HttpStatus.OK)
-    public Receipt getAllReceipts(@RequestParam String jwt, @Valid @RequestBody ReceiptData data, BindingResult bindingResult) {
+    public Receipt addReceipt(@RequestParam String jwt, @Valid @RequestBody ReceiptData data, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
@@ -63,7 +63,10 @@ public class ReceiptController {
 
     @PostMapping("/receipts/{id}/products")
     @ResponseStatus(HttpStatus.OK)
-    public Product addProduct(@PathVariable long id, @RequestBody @Valid ProductData product, @RequestParam String jwt) {
+    public Product addProduct(@PathVariable long id, @RequestBody @Valid ProductData product, @RequestParam String jwt, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
         return receiptService.addProduct(receiptService.findById(id), product, userService.findByJWT(jwt));
     }
 

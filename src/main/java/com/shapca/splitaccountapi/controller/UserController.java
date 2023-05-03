@@ -29,7 +29,7 @@ public class UserController {
 
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    public String getUser(@RequestBody @Valid UserData userData, BindingResult bindingResult) {
+    public String sign(@RequestBody @Valid UserData userData, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }

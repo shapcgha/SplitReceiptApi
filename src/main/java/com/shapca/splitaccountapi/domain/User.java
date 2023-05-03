@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -27,11 +28,16 @@ public class User {
     @Size(min = 2, max = 16)
     @Pattern(regexp = "[a-z]+", message = "Only small latin letters")
     private String login;
+    @JsonIgnore
     private String passwordSha;
     @ManyToMany()
     @JoinTable()
     @JsonIgnore
     private Set<Receipt> receipts;
+
+    @ManyToMany(mappedBy = "owners")
+    @JsonIgnore
+    private List<Product> products;
 
     public void setPasswordSha(String passwordSha) {
         this.passwordSha = passwordSha;

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,10 +21,17 @@ public class Product {
     @GeneratedValue
     long id;
 
-    String owner;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable
+    Set<User> owners;
     @NotNull
     @PositiveOrZero
     long price;
+
+    @NotNull
+    @PositiveOrZero
+    long count;
+
     @NotNull
     @NotEmpty
     String name;
@@ -31,4 +40,7 @@ public class Product {
     @JoinColumn(nullable = false)
     @JsonIgnore
     Receipt receipt;
+
+    @NotNull
+    boolean isOwn;
 }
